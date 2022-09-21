@@ -1,25 +1,34 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from "react";
+import api from "./services/api";
+import Navbar from "./components/Navbar";
 
-function App() {
+export default function App() {
+  let [service, setService] = useState(null);
+
+  useEffect(() => {
+    api
+      .get("/services")
+      .then((res) => res.data)
+      .then((service) => {
+        setService(service);
+      })
+      .catch((err) => {
+        console.error("ops! ocorreu um erro" + err);
+      });
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <Navbar />
+      {service &&
+        service.map((service) => (
+          <div>
+            <p> {service.name} </p>
+            <p> {service.description}</p>
+            <p>{service._id}</p>
+            <hr></hr>
+          </div>
+        ))}
     </div>
   );
 }
-
-export default App;
